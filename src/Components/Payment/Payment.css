@@ -28,6 +28,14 @@
   border: none;
   width: 30%;
 }
+.refill-btn1 {
+  background: linear-gradient(104deg, rgb(139, 41, 242) 25%, rgb(32, 111, 255));
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 15%;
+}
+
 .payment-bar1 {
   display: flex;
   justify-content: space-between;
@@ -46,4 +54,48 @@
   .payment-container {
     width: 20rem;
   }
+}
+
+/*  key generate css  */
+
+.payment-bar1 form {
+  padding-left: 50px;
+  padding-top: 50px;
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%);
+}
+
+.payment-bar1 h1 {
+  text-align: center;
+  margin-bottom: 5%;
+  color: white;
+  font-size: 25px;
+}
+.payment-bar1 h3 {
+  text-align: left;
+  margin-bottom: 5%;
+
+  color: white;
+  font-size: 15px;
+}
+
+.payment-bar1 button {
+  transition: 0.5s;
+  height: 45px;
+  width: 40%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 25px;
+  margin-left: 10px;
+}
+.buttonC {
+  transition: 0.5s;
+  height: 30px;
+  width: 12%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 0px;
+  margin-left: 60px;
 }
