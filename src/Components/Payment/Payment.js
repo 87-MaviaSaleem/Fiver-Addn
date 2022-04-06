@@ -2,45 +2,40 @@ import { React, useEffect, useState } from "react";
 import "./Payment.css";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import Key from "./Key";
 
 function PaymentScreen() {
+  const [generate, setGenerate] = useState(false);
+  const [change, setChange] = useState(false);
   const [buyer, setBuyer] = useState({
     key: uuidv4(),
     balance: 0,
   });
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    console.log(event.target.value);
-
-    setBuyer((prevValue) => {
-      return { ...prevValue, [name]: value };
-    });
-    console.log("sheikh change");
+  function updateBuyer(user) {
+    setBuyer(user);
   }
 
-  function handleSubmit1(e) {
+  function handleSubmit1() {
+    setGenerate(true);
     const user = {
       buyer: buyer,
       value: 1,
     };
-    console.log(user.buyer);
-    axios.post("http://localhost:8000", user).then((result) => {
+    console.log(buyer);
+    // document.getElementById("myInput").setAttribute(buyer.key, "");
+    axios.post("https://128.199.17.136/", user).then((result) => {
       console.log("successfully posted");
-      setBuyer({
-        key: "",
-        balance: "",
-      });
     });
   }
 
-  function handleSubmit2(e) {
+  function handleSubmit2() {
     if (buyer.key != "") {
       const user = {
         buyer: buyer,
         value: 2,
       };
-      axios.post("http://localhost:8000", user).then((result) => {
+      axios.post("https://128.199.17.136/", user).then((result) => {
         if (result) {
           console.log("successfully login");
           setBuyer({
@@ -51,13 +46,21 @@ function PaymentScreen() {
       });
     }
   }
-
   function copy() {
     var copyText = document.getElementById("myInput");
     copyText.select();
     copyText.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(copyText.value);
     alert("Copied the text: " + copyText.value);
+  }
+
+  function handleChange(event) {
+    setChange(true);
+    const { name, value } = event.target;
+    console.log(event.target.value);
+    setBuyer((prevValue) => {
+      return { ...prevValue, [name]: value };
+    });
   }
 
   function handleRefill() {
@@ -112,32 +115,30 @@ function PaymentScreen() {
   return (
     <div className="payment-container" id="payment">
       <div>
-        <form>
-          <h1>Get/Put Your Key</h1>
-          <div>
-            <input
-              value={buyer.key}
-              name="key"
-              id="myInput"
-              onChange={handleChange}
-              type="text"
-              placeholder="key"
-            />
+        <h1>Get/Put Your Key</h1>
+        <div>
+          <input
+            name="key"
+            id="myInput"
+            type="text"
+            placeholder="key"
+            onChange={handleChange}
+            value={generate ? buyer.key : change ? buyer.key : ""}
+          />
 
-            <button className="ml-4 refill-btn1" onClick={copy}>
-              C
-            </button>
-          </div>
-
-          <button className="mr-4 mt-4 refill-btn" onClick={handleSubmit1}>
-            Generate
+          <button className="ml-4 refill-btn1" onClick={copy}>
+            C
           </button>
-          <button className=" mt-4 refill-btn" onClick={handleSubmit2}>
-            Connect
-          </button>
+        </div>
 
-          <p className="mt-4"> balance = {buyer.balance}</p>
-        </form>
+        <button className="mr-4 mt-4 refill-btn" onClick={handleSubmit1}>
+          Generate
+        </button>
+        <button className=" mt-4 refill-btn" onClick={handleSubmit2}>
+          Connect
+        </button>
+
+        <p className="mt-4"> balance = {buyer.balance}</p>
       </div>
       <div className="payment-box">
         <div className="payment-bar">
