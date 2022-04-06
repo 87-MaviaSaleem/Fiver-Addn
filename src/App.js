@@ -5,26 +5,52 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 import Main from "./Components/Main/Main";
 import { useState, useEffect } from "react";
-//import fetch from "node-fetch";
 
+//import fetch from "node-fetch";
+import axios from "axios";
 function App() {
   const [darkMode, setDarkMode] = useState(getInitialMode());
-
+  const [Token, setToken] = useState();
   useEffect(() => {
     setDarkMode(getInitialMode());
   });
-  function changeMode(mode) {
+  async function changeMode(mode) {
     setDarkMode(mode);
-
-    fetch("https://api.prepaidforge.com/v1/1.0/findAllProducts", {
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // Do some stuff ...
-        console.log(data);
+    /* axios
+      .get("http://128.199.17.136/products", {
+        header: { "Content-Type": "application/json" },
       })
-      .catch((err) => console.log(err));
+      .then((response) => {
+        console.log(response.status);
+        console.log(response.data);
+      });
+
+    /* axios
+      .get("http://128.199.17.136/", {
+        header: { "Content-Type": "application/json" },
+        data: {
+          apiToken: Token,
+        },
+      })
+      .then((response) => {
+        console.log("get method");
+        console.log(response.status);
+        console.log(response.data);
+      });*/
+    /* axios
+      .post("https://api.prepaidforge.com/v1/1.0/signInWithApi", {
+        header: { "Content-Type": "application/json" },
+        data: {
+          email: "Worldofprodiverse@gmail.com",
+          password: "Bravo1?@1",
+        },
+      })
+      .then((response) => {
+        console.log("front");
+        console.log(response.status);
+        console.log(response);
+        console.log("bund hoi pri hain jnaab");
+      });*/
   }
   function getInitialMode() {
     const savedMode = JSON.parse(localStorage.getItem("dark"));

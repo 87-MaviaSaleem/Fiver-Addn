@@ -3,6 +3,7 @@ import "./Header.css";
 import logo from "../../Assets/Logo.PNG";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWallet } from "@fortawesome/fontawesome-free-solid";
+
 function Header(params) {
   function openCartScreen() {
     document.getElementById("cart").style.setProperty("width", "60%");
@@ -10,6 +11,14 @@ function Header(params) {
     document.getElementById("cart").classList.add("cart-size");
   }
 
+  function openPayment() {
+    var display = document.getElementById("payment").style.display;
+    if (display === "none") {
+      document.getElementById("payment").style.setProperty("display", "flex");
+    } else {
+      document.getElementById("payment").style.setProperty("display", "none");
+    }
+  }
   const [darkMode, setDarkMode] = useState(params.Mode);
   useEffect(() => {
     setDarkMode(params.Mode);
@@ -32,9 +41,11 @@ function Header(params) {
             }
             id="header-money"
           >
-            <FontAwesomeIcon className="wallet-icon" icon={faWallet} />
-            <span id="money">$ 0.00</span>
-            <button id="addmoney">+</button>
+            <a onClick={openPayment}>
+              <FontAwesomeIcon className="wallet-icon" icon={faWallet} />
+              <span id="money">$ 0.00</span>
+              <span id="addmoney">+</span>
+            </a>
           </div>
           <div className="header-currency mr-4">
             <select

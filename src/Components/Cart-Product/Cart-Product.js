@@ -2,10 +2,15 @@ import { React, useEffect, useState } from "react";
 import "./Cart-Product.css";
 function CartProduct(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
+  const [cartItem, setCartItem] = useState(params.cart);
   useEffect(() => {
     setDarkMode(params.Mode);
+    params.setBill(cartItem[0] ? cartItem[0].price : "");
   });
-
+  useEffect(() => {
+    setCartItem(params.cart ? params.cart : []);
+    console.log(cartItem[0]);
+  }, [params.cart]);
   var products = [
     {
       brand: "Amazon",
@@ -22,10 +27,10 @@ function CartProduct(params) {
   ];
   return (
     <div className="cartproduct-container">
-      {products.map((item) => (
+      {cartItem.map((item) => (
         <div className="cartproduct-box mb-3 mr-4">
           <div className="cartproduct-img">
-            <img src={item.img} height="120"></img>
+            <img src={item.image} height="120"></img>
           </div>
           <div
             className={
@@ -51,7 +56,7 @@ function CartProduct(params) {
             </div>
             <div className="cartproduct-region">
               <h6>
-                Product Region <span>{item.region}</span>
+                Product Region <span>{item.amount}</span>
               </h6>
             </div>
           </div>

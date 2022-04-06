@@ -4,6 +4,7 @@ import "./Cart.css";
 
 function Cart(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
+  const [Bill, setBill] = useState();
   useEffect(() => {
     setDarkMode(params.Mode);
   });
@@ -17,6 +18,9 @@ function Cart(params) {
       .style.setProperty("width", "0%", "important");
     document.getElementById("dispatch").style.setProperty("display", "none");
     document.getElementById("cart").classList.remove("cart-size");
+  }
+  function updateBill(bill) {
+    setBill(bill);
   }
   return (
     <div
@@ -42,7 +46,11 @@ function Cart(params) {
         </div>
         <div className="order-container">
           <div className="cart-items">
-            <CartProduct Mode={darkMode}></CartProduct>
+            <CartProduct
+              Mode={darkMode}
+              cart={params.cart}
+              setBill={updateBill}
+            ></CartProduct>
           </div>
           <div className="order-details">
             <div
@@ -58,7 +66,7 @@ function Cart(params) {
               <div className="summary-details">
                 <h5>Total: </h5>
                 <h5>
-                  $ <span>5</span>
+                  $ <span>{Bill}</span>
                 </h5>
               </div>
               <div className="summary-details">

@@ -1,5 +1,8 @@
 import { React, useEffect, useState } from "react";
 import "./Items.css";
+import axios from "axios";
+import ItemScreen from "../Product/Product";
+const jsonData = require("./Brands.json");
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
@@ -9,19 +12,60 @@ import "./Items.css";
 
 function Items(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
+  const [Products, setProducts] = useState([]);
+  // const [State, setState] = useState(false);
+  const [Brand, setBrand] = useState({});
+
+  function FetchProducts() {
+    axios
+      .get("http://128.199.17.136/", {
+        header: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log("products");
+        console.log(response.status);
+        console.log(response.data);
+        var mix = [];
+        var temp = response.data.filter(
+          (item) => item.category == "Entertainment"
+        );
+        setProducts(mix);
+        console.log(Products);
+      });
+    return [];
+  }
+  function changeCart(item) {
+    params.setCart(item);
+  }
   useEffect(() => {
     setDarkMode(params.Mode);
+    setProducts(jsonData);
   });
 
-  function openItemScreen() {
+  var Screen;
+  function openItemScreen(index) {
+    setBrand(Products[index]);
     document.getElementById("item-screen").style.setProperty("width", "60%");
     document.getElementById("dispatch").style.setProperty("display", "block");
     document.getElementById("item-screen").classList.add("itemscreen-size");
   }
-  var products = [
+  /*var products = [
     {
-      img: "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
-      name: "Amazon",
+      imageUrl:
+        "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
+      brand: "Amazon",
+      category: "Online Shopping",
+    },
+    {
+      imageUrl:
+        "https://w7.pngwing.com/pngs/244/323/png-transparent-steam-gift-card-video-game-valve-corporation-gift-miscellaneous-game-logo-thumbnail.png",
+      brand: "Steam",
+      category: "Online Shopping",
+    },
+    {
+      imageUrl:
+        "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
+      brand: "Netflix",
       category: "Online Shopping",
     },
     {
@@ -29,17 +73,7 @@ function Items(params) {
       name: "Amazon",
       category: "Online Shopping",
     },
-    {
-      img: "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
-      name: "Amazon",
-      category: "Online Shopping",
-    },
-    {
-      img: "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
-      name: "Amazon",
-      category: "Online Shopping",
-    },
-  ];
+  ];*/
   return (
     <div className="items-outercontainer">
       <div className="items-container mt-5">
@@ -98,7 +132,7 @@ function Items(params) {
                 name="categories"
                 value="fashion"
               ></input>
-              <label for="fashion">Fashion</label>
+              <label for="fashion">Mobile recharge</label>
             </div>
             <div className="radios">
               <input
@@ -109,16 +143,6 @@ function Items(params) {
                 value="fooddrinks"
               ></input>
               <label for="fooddrinks">Food & Drinks</label>
-            </div>
-            <div className="radios">
-              <input
-                className="mr-2"
-                type="radio"
-                id="Gambling"
-                name="categories"
-                value="gambling"
-              ></input>
-              <label for="gambling">Gambling</label>
             </div>
             <div className="radios">
               <input
@@ -138,7 +162,7 @@ function Items(params) {
                 name="categories"
                 value="hotels"
               ></input>
-              <label for="hotels">Hotels</label>
+              <label for="hotels">Shopping</label>
             </div>
             <div className="radios">
               <input
@@ -148,7 +172,7 @@ function Items(params) {
                 name="categories"
                 value="onlinepayments"
               ></input>
-              <label for="onlinepayments">Online Payments</label>
+              <label for="onlinepayments">Payment cards</label>
             </div>
           </div>
         </div>
@@ -211,21 +235,28 @@ function Items(params) {
                   : "grid-container1"
               }
             >
-              {products.map((item) => (
+              {Products.map((item, index) => (
                 <div className="grid-item card-p">
-                  <a onClick={openItemScreen}>
-                    <img className="card" src={item.img} alt="Card image cap" />
+                  <a onClick={() => openItemScreen(index)}>
+                    <img
+                      className="card"
+                      src={item.imageUrl}
+                      alt="Card image cap"
+                    />
                   </a>
+                  {Screen}
                   <div className="card-body">
-                    <h5 className="card-title" id="card-title">
-                      {item.name}
-                    </h5>
                     <p className="card-text" id="card-subtitle">
-                      {item.category}
+                      {item.Brand}
                     </p>
                   </div>
                 </div>
               ))}
+              <ItemScreen
+                Mode={darkMode}
+                Item={Brand}
+                setCart={changeCart}
+              ></ItemScreen>
             </div>
           </div>
         </div>

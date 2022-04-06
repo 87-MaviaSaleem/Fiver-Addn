@@ -3,9 +3,22 @@ import "./Product.css";
 
 function ItemScreen(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
+  const [Card, setCard] = useState(params.Item);
   useEffect(() => {
     setDarkMode(params.Mode);
   });
+  useEffect(() => {
+    /*if (window.location.pathname === `/${Card.brand}`) {
+      console.log("sidebar");
+      document.getElementById("item-screen").style.setProperty("width", "60%");
+      document.getElementById("dispatch").style.setProperty("display", "block");
+      document.getElementById("item-screen").classList.add("itemscreen-size");
+      setDescription();
+    }*/
+    params.setCart();
+    setCard(params.Item);
+    console.log(Card);
+  }, [params.Item]);
 
   function openCartScreen() {
     document.getElementById("cart").style.setProperty("width", "60%");
@@ -22,6 +35,19 @@ function ItemScreen(params) {
     document.getElementById("header-money").style.backgroundColor = "white";
     document.getElementById("dispatch").style.setProperty("display", "none");
     document.getElementById("item-screen").classList.remove("itemscreen-size");
+  }
+  function handleCart() {
+    var price1 = document.getElementById("price").value;
+    var amount1 = document.getElementById("amount").value;
+    var item = [
+      {
+        image: params.Item.imageUrl,
+        brand: params.Item.Brand,
+        price: price1,
+        amount: amount1,
+      },
+    ];
+    params.setCart(item);
   }
   return (
     <div
@@ -50,42 +76,26 @@ function ItemScreen(params) {
       <div className="itemdetails-container mt-3">
         <div className="itemdetails-box">
           <div className="item-image">
-            <img src="https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png"></img>
+            <img src={Card.imageUrl}></img>
           </div>
           <div className="item-details">
             <div className="item-title mb-2">
-              <h1>Amazon Cards</h1>
+              <h1>{Card.Brand} Cards</h1>
             </div>
             <div className="item-desc">
               <div className="itemdesc-row mb-2">
                 <p>
-                  Amazon offers a wide variety of products, ranging from movies
-                  and books to video games, furniture, food, jewelry,
-                  electronics, software, apparel, food, toys, and much, much
-                  more to choose from over 12 million different products and
-                  more than 2.5 million sellers. It's the world's largest
-                  retailer, so whatever you're looking for, you can be sure that
-                  Amazon will have you covered.
+                  {Card.Desc ? Card.Desc[0] : ""}
+                  <br />
+                  <br />
+                  {Card.Desc ? Card.Desc[1] : ""}
+                  <br />
+                  <br />
+                  {Card.Desc ? Card.Desc[2] : ""}
+                  <br />
+                  <br />
+                  {Card.Desc ? Card.Desc[3] : ""}
                 </p>
-              </div>
-              <div className="itemdesc-row mb-2">
-                <p>
-                  With an Amazon Prime subscription, you're getting free, fast
-                  delivery, exclusive deals, discounts and access to a family of
-                  online entertainment services, including games and free loot,
-                  Kindle books & magazines, movies & TV shows, Twitch Prime
-                  livestreaming and over 2 million songs with Amazon Music.
-                </p>
-              </div>
-              <div className="itemdesc-row mb-2">
-                <p>
-                  The Amazon Gift Card is an excellent choice for any occasion,
-                  whether you want to congratulate someone dear to you on their
-                  achievements or wish them a happy birthday.
-                </p>
-              </div>
-              <div className="itemdesc-row mb-2">
-                <p>Terms & Conditions apply.</p>
               </div>
             </div>
             <div
@@ -105,7 +115,7 @@ function ItemScreen(params) {
                       <select
                         className="country-btn p-2"
                         name="category1"
-                        id="category1"
+                        id="country"
                       >
                         <option>United States</option>
                         <option>United States</option>
@@ -123,13 +133,13 @@ function ItemScreen(params) {
                       <select
                         className="country-btn p-2"
                         name="category"
-                        id="category"
+                        id="amount"
                       >
-                        <option>01</option>
-                        <option>01</option>
-                        <option>02</option>
-                        <option>03</option>
-                        <option>04</option>
+                        <option value="1">01</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
                       </select>
                     </div>
                   </div>
@@ -139,17 +149,18 @@ function ItemScreen(params) {
                     <span>Select Amount</span>
                   </div>
                   <div className="categories1">
-                    <select className="country-btn p-2">
-                      <option>USD 5</option>
-                      <option>USD 5</option>
-                      <option>USD 10</option>
-                      <option>USD 20</option>
-                      <option>USD 50</option>
+                    <select className="country-btn p-2" id="price">
+                      <option value="5">USD 5</option>
+                      <option value="5">USD 5</option>
+                      <option value="10">USD 10</option>
+                      <option value="20">USD 20</option>
+                      <option value="50">USD 50</option>
                     </select>
                   </div>
                 </div>
                 <div className="checkout-row mb-3">
                   <button
+                    onClick={handleCart}
                     className={
                       darkMode
                         ? "checkcart-btn dark-checkcart-btn p-2"
@@ -168,35 +179,19 @@ function ItemScreen(params) {
               <div className="item-title mb-2 mt-2">
                 <h1>Description</h1>
               </div>
-              <div className="itemdesc-row mb-2 ">
-                <p>
-                  Amazon offers a wide variety of products, ranging from movies
-                  and books to video games, furniture, food, jewelry,
-                  electronics, software, apparel, food, toys, and much, much
-                  more to choose from over 12 million different products and
-                  more than 2.5 million sellers. It's the world's largest
-                  retailer, so whatever you're looking for, you can be sure that
-                  Amazon will have you covered.
-                </p>
-              </div>
               <div className="itemdesc-row mb-2">
                 <p>
-                  With an Amazon Prime subscription, you're getting free, fast
-                  delivery, exclusive deals, discounts and access to a family of
-                  online entertainment services, including games and free loot,
-                  Kindle books & magazines, movies & TV shows, Twitch Prime
-                  livestreaming and over 2 million songs with Amazon Music.
+                  {Card.Desc ? Card.Desc[0] : ""}
+                  <br />
+                  <br />
+                  {Card.Desc ? Card.Desc[1] : ""}
+                  <br />
+                  <br />
+                  {Card.Desc ? Card.Desc[2] : ""}
+                  <br />
+                  <br />
+                  {Card.Desc ? Card.Desc[3] : ""}
                 </p>
-              </div>
-              <div className="itemdesc-row mb-2">
-                <p>
-                  The Amazon Gift Card is an excellent choice for any occasion,
-                  whether you want to congratulate someone dear to you on their
-                  achievements or wish them a happy birthday.
-                </p>
-              </div>
-              <div className="itemdesc-row mb-2">
-                <p>Terms & Conditions apply.</p>
               </div>
             </div>
           </div>

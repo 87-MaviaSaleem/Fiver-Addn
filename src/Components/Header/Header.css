@@ -54,6 +54,9 @@
   justify-content: center;
   background-color: white;
 }
+.header-money a {
+  cursor: pointer;
+}
 .dark-header-money {
   background-color: #0c0d18 !important;
 }
