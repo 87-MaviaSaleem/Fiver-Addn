@@ -45,13 +45,13 @@ function CartProduct(params) {
               </div>
               <div className="cartproduct-price">
                 <h4>
-                  $ <span>{item.price}</span>
+                  <span>{item.price}</span>
                 </h4>
               </div>
             </div>
             <div className="cartproduct-quantity">
               <h5>
-                USD <span>{item.price} x 1</span>
+                <span>{params.code}</span> <span>{item.price} x 1</span>
               </h5>
             </div>
             <div className="cartproduct-region">

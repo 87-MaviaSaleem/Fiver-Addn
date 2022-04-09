@@ -1,11 +1,23 @@
 import { React, useEffect, useState } from "react";
 import "./Product.css";
+import axios from "axios";
+//import CC from "currency-converter-lt";
 
 function ItemScreen(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
   const [Card, setCard] = useState(params.Item);
+  const [Countries, setCountries] = useState(params.country);
+  const [Curr, setCurr] = useState(params.curr);
+  const [Stock, setStock] = useState(params.stock);
+  const [Fee, setFee] = useState(params.fee);
+  const [price, setPrice] = useState(params.usd);
   useEffect(() => {
     setDarkMode(params.Mode);
+    setCountries(params.country);
+    setStock(params.stock);
+    setCurr(params.curr);
+    setFee(params.fee);
+    setPrice(params.usd);
   });
   useEffect(() => {
     /*if (window.location.pathname === `/${Card.brand}`) {
@@ -15,11 +27,27 @@ function ItemScreen(params) {
       document.getElementById("item-screen").classList.add("itemscreen-size");
       setDescription();
     }*/
-    params.setCart();
+    //params.setCart(Fee, price);
     setCard(params.Item);
-    console.log(Card);
+    //console.log(Card);
   }, [params.Item]);
 
+  function handleChange() {
+    params.updateprice(Card.Brand);
+    //params.updatestock(Card.Brand, params.curr.code, 1);
+    // params.updatestock(Card.Brand, Curr.code);
+  }
+  useEffect(() => {
+    params.updatestock(Card.Brand, params.curr.code, 1);
+  }, [params.curr.code]);
+
+  useEffect(() => {
+    params.updatestock(Card.Brand, Curr.code);
+  }, [params.curr]);
+
+  function handleChange1() {
+    params.updatestock(Card.Brand, params.curr.code, 2);
+  }
   function openCartScreen() {
     document.getElementById("cart").style.setProperty("width", "60%");
     document.getElementById("cart").classList.add("cart-size");
@@ -47,7 +75,7 @@ function ItemScreen(params) {
         amount: amount1,
       },
     ];
-    params.setCart(item);
+    params.setCart(item, Fee, price, params.curr.code);
   }
   return (
     <div
@@ -116,12 +144,11 @@ function ItemScreen(params) {
                         className="country-btn p-2"
                         name="category1"
                         id="country"
+                        onChange={handleChange}
                       >
-                        <option>United States</option>
-                        <option>United States</option>
-                        <option>United Kingdom</option>
-                        <option>France</option>
-                        <option>Australia</option>
+                        {Countries.map((item) => (
+                          <option>{item}</option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -146,15 +173,18 @@ function ItemScreen(params) {
                 </div>
                 <div className="checkout-row2 mb-3">
                   <div className="amount-title mb-3">
-                    <span>Select Amount</span>
+                    <span>Select Amount ({Stock.quantity})</span>
                   </div>
                   <div className="categories1">
-                    <select className="country-btn p-2" id="price">
-                      <option value="5">USD 5</option>
-                      <option value="5">USD 5</option>
-                      <option value="10">USD 10</option>
-                      <option value="20">USD 20</option>
-                      <option value="50">USD 50</option>
+                    <span id="code">{Curr.code}</span>
+                    <select
+                      className="country-btn p-2"
+                      id="price"
+                      onChange={handleChange1}
+                    >
+                      {!Curr.price
+                        ? []
+                        : Curr.price.map((item) => <option> {item}</option>)}
                     </select>
                   </div>
                 </div>
@@ -171,7 +201,9 @@ function ItemScreen(params) {
                   </button>
                 </div>
                 <div className="checkout-row">
-                  <button className="checkout-btn p-2">Checkout</button>{" "}
+                  <button className="checkout-btn p-2">
+                    Checkout(<span>{price}</span>)
+                  </button>{" "}
                 </div>
               </div>
             </div>

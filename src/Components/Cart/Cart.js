@@ -5,8 +5,15 @@ import "./Cart.css";
 function Cart(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
   const [Bill, setBill] = useState();
+  const [Code, setCode] = useState(params.code);
+  const [Fee, setFee] = useState(params.fee);
+  const [price, setPrice] = useState(params.price);
+
   useEffect(() => {
     setDarkMode(params.Mode);
+    setFee(params.fee);
+    setPrice(params.price);
+    setCode(params.code);
   });
 
   function closeCartScreen() {
@@ -21,6 +28,9 @@ function Cart(params) {
   }
   function updateBill(bill) {
     setBill(bill);
+  }
+  function updateCode(code) {
+    setCode(code);
   }
   return (
     <div
@@ -50,6 +60,7 @@ function Cart(params) {
               Mode={darkMode}
               cart={params.cart}
               setBill={updateBill}
+              code={Code}
             ></CartProduct>
           </div>
           <div className="order-details">
@@ -66,13 +77,13 @@ function Cart(params) {
               <div className="summary-details">
                 <h5>Total: </h5>
                 <h5>
-                  $ <span>{Bill}</span>
+                  $ <span>{price}</span>
                 </h5>
               </div>
               <div className="summary-details">
                 <h5>Fees: </h5>
                 <h5>
-                  $ <span>0</span>
+                  $ <span>{Fee}</span>
                 </h5>
               </div>
               <div className="summary-details">
@@ -84,7 +95,7 @@ function Cart(params) {
               <div className="summary-details">
                 <h4>Payable: </h4>
                 <h4>
-                  $ <span>0</span>
+                  $ <span>{price + Fee}</span>
                 </h4>
               </div>
             </div>

@@ -7,11 +7,29 @@ import Key from "./Key";
 function PaymentScreen() {
   const [generate, setGenerate] = useState(false);
   const [change, setChange] = useState(false);
-  const [buyer, setBuyer] = useState({
-    key: uuidv4(),
-    balance: 0,
+  const [buyer, setBuyer] = useState(
+    sessionStorage.getItem("token")
+      ? sessionStorage.getItem("key")
+      : {
+          key: uuidv4(),
+          balance: 0,
+        }
+  );
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setBuyer({
+        key: sessionStorage.getItem("key"),
+        balance: sessionStorage.getItem("balance"),
+      });
+      document.getElementById("connect").style.setProperty("display", "none");
+      document.getElementById("connect1").style.setProperty("display", "none");
+      document.getElementById("signout").style.setProperty("display", "block");
+    } else {
+      document.getElementById("signout").style.setProperty("display", "none");
+      document.getElementById("connect").style.setProperty("display", "block");
+      document.getElementById("connect1").style.setProperty("display", "block");
+    }
   });
-
   function updateBuyer(user) {
     setBuyer(user);
   }
@@ -22,9 +40,9 @@ function PaymentScreen() {
       buyer: buyer,
       value: 1,
     };
-    console.log(buyer);
+    // console.log(buyer);
     // document.getElementById("myInput").setAttribute(buyer.key, "");
-    axios.post("https://128.199.17.136/", user).then((result) => {
+    axios.post("http://128.199.17.136/", user).then((result) => {
       console.log("successfully posted");
     });
   }
@@ -35,13 +53,16 @@ function PaymentScreen() {
         buyer: buyer,
         value: 2,
       };
-      axios.post("https://128.199.17.136/", user).then((result) => {
+      axios.post("http://128.199.17.136/", user).then((result) => {
         if (result) {
           console.log("successfully login");
           setBuyer({
             key: buyer.key,
             balance: buyer.balance,
           });
+          sessionStorage.setItem("token", result.data.token); // decode your token here
+          sessionStorage.setItem("key", result.data.BuyerExist.key);
+          sessionStorage.setItem("balance", result.data.BuyerExist.balance);
         }
       });
     }
@@ -54,10 +75,17 @@ function PaymentScreen() {
     alert("Copied the text: " + copyText.value);
   }
 
+  function handleSignOut() {
+    sessionStorage.clear();
+    setBuyer({
+      key: "",
+      balance: 0,
+    });
+  }
   function handleChange(event) {
     setChange(true);
     const { name, value } = event.target;
-    console.log(event.target.value);
+    //console.log(event.target.value);
     setBuyer((prevValue) => {
       return { ...prevValue, [name]: value };
     });
@@ -123,7 +151,15 @@ function PaymentScreen() {
             type="text"
             placeholder="key"
             onChange={handleChange}
-            value={generate ? buyer.key : change ? buyer.key : ""}
+            value={
+              sessionStorage.getItem("token")
+                ? sessionStorage.getItem("key")
+                : generate
+                ? buyer.key
+                : change
+                ? buyer.key
+                : ""
+            }
           />
 
           <button className="ml-4 refill-btn1" onClick={copy}>
@@ -131,21 +167,34 @@ function PaymentScreen() {
           </button>
         </div>
 
-        <button className="mr-4 mt-4 refill-btn" onClick={handleSubmit1}>
+        <button
+          id="connect"
+          className="mr-4 mt-4 refill-btn"
+          onClick={handleSubmit1}
+        >
           Generate
         </button>
-        <button className=" mt-4 refill-btn" onClick={handleSubmit2}>
+        <button
+          id="connect1"
+          className=" mt-4 refill-btn"
+          onClick={handleSubmit2}
+        >
           Connect
         </button>
-
+        <button
+          id="signout"
+          className=" mt-4 refill-btn"
+          onClick={handleSignOut}
+        >
+          Logout
+        </button>
         <p className="mt-4"> balance = {buyer.balance}</p>
       </div>
       <div className="payment-box">
         <div className="payment-bar">
           <input id="amount"></input>
           <select name="method" id="method">
-            <option>NeoSurf</option>
-            <option>Bitcoin</option>
+            <option>Crypto</option>
           </select>
           <button className="refill-btn" onClick={handleRefill}>
             Refill

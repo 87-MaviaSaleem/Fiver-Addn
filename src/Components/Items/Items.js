@@ -13,29 +13,22 @@ const jsonData = require("./Brands.json");
 function Items(params) {
   const [darkMode, setDarkMode] = useState(params.Mode);
   const [Products, setProducts] = useState([]);
-  // const [State, setState] = useState(false);
   const [Brand, setBrand] = useState({});
+  const [countries, setCountries] = useState([]);
+  const [Curr, setCurr] = useState([]);
+  const [Stock, setStock] = useState({});
+  const [Fee, setFee] = useState();
+  const [USDPrice, setUSDPrice] = useState();
+  useEffect(() => {
+    axios.get("http://128.199.17.136/").then((result) => {
+      if (result) {
+        sessionStorage.setItem("apitoken", result.data.apiToken); // decode your token here
+      }
+    });
+  }, [1]);
 
-  function FetchProducts() {
-    axios
-      .get("http://128.199.17.136/", {
-        header: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        console.log("products");
-        console.log(response.status);
-        console.log(response.data);
-        var mix = [];
-        var temp = response.data.filter(
-          (item) => item.category == "Entertainment"
-        );
-        setProducts(mix);
-        console.log(Products);
-      });
-    return [];
-  }
-  function changeCart(item) {
-    params.setCart(item);
+  function changeCart(item, Fee, price, code) {
+    params.setCart(item, Fee, price, code);
   }
   useEffect(() => {
     setDarkMode(params.Mode);
@@ -43,37 +36,132 @@ function Items(params) {
   });
 
   var Screen;
+
+  function updatePrice(brand) {
+    var value = document.getElementById("country").value;
+    const data = {
+      brand: brand,
+      country: value,
+      value: 4,
+    };
+    axios.post("http://128.199.17.136/", data).then((response) => {
+      //console.log(response.data);
+      setCurr(response.data);
+    });
+  }
+
+  function updateStock(brand1, code1, v) {
+    var value = document.getElementById("country").value;
+    var value1 = document.getElementById("price").value;
+    //console.log("stock");
+    let data;
+    if (v === 1) {
+      data = {
+        brand: brand1,
+        country: value,
+        code: Curr.code,
+        price: Number(Curr.price ? Curr.price[0] : 0),
+        apitoken: sessionStorage.getItem("apitoken"),
+        value: 5,
+      };
+    } else if (v === 2) {
+      data = {
+        brand: brand1,
+        country: value,
+        code: Curr.code,
+        price: Number(value1),
+        apitoken: sessionStorage.getItem("apitoken"),
+        value: 5,
+      };
+    }
+    console.log(data);
+    if (brand1 !== undefined && code1 !== undefined) {
+      axios.post("http://128.199.17.136/", data).then((response) => {
+        console.log("front");
+        /*console.log("token");
+        console.log(sessionStorage.getItem("apitoken"));
+        console.log("sku");
+        console.log(response.data);*/
+        //console.log(response.data);
+        if (v === 1) {
+          document.getElementById("price").value = Curr.price
+            ? Curr.price[0]
+            : 0;
+        }
+        setStock(response.data);
+        updateFee(data.code, data.price, response.data.purchasePrice);
+      });
+    }
+  }
+
+  function updateFee(from1, amount, price) {
+    const data = {
+      from: from1,
+      to: "USD",
+      amount: amount,
+      value: 6,
+    };
+    console.log(data);
+    axios.post("http://128.199.17.136/", data).then((response2) => {
+      console.log(price);
+      console.log(response2.data.cur);
+      setUSDPrice(response2.data.cur);
+      if (price < response2.data.cur) {
+        setFee(0);
+        console.log("fee" + 0);
+      } else if (price > response2.data.cur && response2.data.cur < 50) {
+        setFee(2.3);
+        console.log("fee" + 2.3);
+      } else if (price > response2.data.cur && response2.data.cur > 50) {
+        setFee(3.4);
+        console.log("fee" + 3.3);
+      }
+    });
+  }
   function openItemScreen(index) {
     setBrand(Products[index]);
+    const data = {
+      brand: Products[index].Brand,
+      amount: 20,
+      currency: "GBP",
+      value: 3,
+    };
+    axios.post("http://128.199.17.136/", data).then((response) => {
+      //console.log(response.data);
+      setCountries(response.data.countries);
+      setCurr(response.data.curr);
+      console.log("code2");
+      console.log(response.data.curr.code);
+      const data = {
+        brand: Products[index].Brand,
+        country: response.data.countries[0],
+        code: response.data.curr.code,
+        price: Number(response.data.curr.price[0]),
+        apitoken: sessionStorage.getItem("apitoken"),
+        value: 5,
+      };
+      console.log("data2");
+      console.log(data);
+      axios.post("http://128.199.17.136/", data).then((response1) => {
+        console.log("front2");
+        /*console.log("token2");
+        console.log(sessionStorage.getItem("apitoken"));
+        console.log("sku2");
+        console.log(response1.data);*/
+        //console.log(response.data);
+        setStock(response1.data);
+        updateFee(
+          response.data.curr.code,
+          Number(response.data.curr.price[0]),
+          response1.data.curr.purchasePrice
+        );
+      });
+    });
+
     document.getElementById("item-screen").style.setProperty("width", "60%");
     document.getElementById("dispatch").style.setProperty("display", "block");
     document.getElementById("item-screen").classList.add("itemscreen-size");
   }
-  /*var products = [
-    {
-      imageUrl:
-        "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
-      brand: "Amazon",
-      category: "Online Shopping",
-    },
-    {
-      imageUrl:
-        "https://w7.pngwing.com/pngs/244/323/png-transparent-steam-gift-card-video-game-valve-corporation-gift-miscellaneous-game-logo-thumbnail.png",
-      brand: "Steam",
-      category: "Online Shopping",
-    },
-    {
-      imageUrl:
-        "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
-      brand: "Netflix",
-      category: "Online Shopping",
-    },
-    {
-      img: "https://i.pinimg.com/originals/41/84/56/41845673072c6a3467807ea43e60eaf7.png",
-      name: "Amazon",
-      category: "Online Shopping",
-    },
-  ];*/
   return (
     <div className="items-outercontainer">
       <div className="items-container mt-5">
@@ -256,6 +344,13 @@ function Items(params) {
                 Mode={darkMode}
                 Item={Brand}
                 setCart={changeCart}
+                country={countries}
+                curr={Curr}
+                stock={Stock}
+                updateprice={updatePrice}
+                updatestock={updateStock}
+                fee={Fee}
+                usd={USDPrice}
               ></ItemScreen>
             </div>
           </div>

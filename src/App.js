@@ -14,6 +14,7 @@ function App() {
   useEffect(() => {
     setDarkMode(getInitialMode());
   });
+
   async function changeMode(mode) {
     setDarkMode(mode);
     /* axios
